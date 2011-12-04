@@ -1,6 +1,6 @@
 """
-x^2 + x + 41 generates a list of primes where 0 < x < q-2
-q must be a prime
+x^2 + x + q generates a list of primes where 0 < x < q-2
+q must be a prime (tested with 41)
 """
 
 def euler(q):
