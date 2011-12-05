@@ -47,21 +47,16 @@ def triangulars():
         s += n
 
 def size1(n, base):
-    if n in base:
-        yield [ n ]
-        
+    if n in base: 
+        yield [n] 
+
 def size2(n, base):
-    for i in range(len(base)):
-        for j in range(i, len(base)):
-            if base[i] + base[j] == n:
-                yield [base[i], base[j]]
+    return [[x, y] for x in base for y in base 
+            if x >= y and x + y == n]
 
 def size3(n, base):
-    for i in range(len(base)):
-        for j in range(i, len(base)):
-            for k in range(j, len(base)):
-                if base[i] + base[j] + base[k] == n:
-                    yield [base[i], base[j], base[k]]
+    return [[x, y, z] for x in base for y in base for z in base 
+            if x >= y >= z and x + y + z == n]
 
 def fermat(n):
     less_than_n = lambda x: x <= n
@@ -69,9 +64,8 @@ def fermat(n):
     base = list(itertools.takewhile(less_than_n, gen))
     return itertools.chain(size1(n, base), size2(n, base), size3(n, base))
 
-for i in range(1, 30):
+for i in range(1, 50):
     print i, "->", ", ".join(map(str, fermat(i)))
-
 
 # def take(n, generator):
 #     """simplified itertools.take_while()"""
