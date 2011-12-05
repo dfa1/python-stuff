@@ -52,17 +52,16 @@ def size1(n, base):
         
 def size2(n, base):
     for i in range(len(base)):
-        for j in range(len(base)):
-            if i <= j and base[i] + base[j] == n:
+        for j in range(i, len(base)):
+            if base[i] + base[j] == n:
                 yield [base[i], base[j]]
 
 def size3(n, base):
     for i in range(len(base)):
-        for j in range(len(base)):
-            for k in range(len(base)):
-                if i <= j <= k and base[i] + base[j] + base[k] == n:
+        for j in range(i, len(base)):
+            for k in range(j, len(base)):
+                if base[i] + base[j] + base[k] == n:
                     yield [base[i], base[j], base[k]]
-
 
 def fermat(n):
     less_than_n = lambda x: x <= n
@@ -72,6 +71,7 @@ def fermat(n):
 
 for i in range(1, 30):
     print i, "->", ", ".join(map(str, fermat(i)))
+
 
 # def take(n, generator):
 #     """simplified itertools.take_while()"""
