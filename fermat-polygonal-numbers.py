@@ -36,8 +36,6 @@ Sample data for triangular numbers:
 28   21+6+1 28
 """
 
-import itertools
-
 def triangulars():
     """yields 1, 3, 6, 10, 15, ..."""
     n = s = 1
@@ -46,23 +44,25 @@ def triangulars():
         n += 1
         s += n
 
-def size1(n, base):
-    if n in base: 
-        yield [n] 
+def len_1(n, base):
+    return [[x] for x in base if x == n]
 
-def size2(n, base):
-    return [[x, y] for x in base for y in base 
-            if x >= y and x + y == n]
+def len_2(n, base):
+    return [[x, y] for x in base for y in base if x >= y and x + y == n]
 
-def size3(n, base):
-    return [[x, y, z] for x in base for y in base for z in base 
-            if x >= y >= z and x + y + z == n]
+def len_3(n, base):
+    return [[x, y, z] for x in base for y in base for z in base if x >= y >= z and x + y + z == n]
 
 def fermat(n):
+    import itertools
     less_than_n = lambda x: x <= n
     gen = triangulars()
     base = list(itertools.takewhile(less_than_n, gen))
-    return itertools.chain(size1(n, base), size2(n, base), size3(n, base))
+    return itertools.chain(
+        len_1(n, base),
+        len_2(n, base),
+        len_3(n, base)
+        )
 
 for i in range(1, 50):
     print i, "->", ", ".join(map(str, fermat(i)))
