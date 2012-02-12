@@ -84,8 +84,6 @@ class socks4socket(object):
 		(identical to socket's connect).
 		To select the proxy server use setproxy().
 		"""
-		print "original = ", destpair
-		print "proxy    = ", self.PROXY
 		self.proxy.connect(self.PROXY)
 		self.__negotiatesocks4(destpair[0],destpair[1])
 
