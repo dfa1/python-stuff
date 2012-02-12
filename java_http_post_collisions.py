@@ -15,7 +15,20 @@ parametri | tempo (s)
 
 ref: http://permalink.gmane.org/gmane.comp.security.full-disclosure/83694
 """
+import os
+import socket
 
+def provide_socket():
+    proxy = os.getenv("socks_proxy", '')
+    if proxy == '':
+        print "no SOCKS"
+        return socket.socket
+    print "enabling SOCKS via {0}".format(proxy)
+    addr, port = proxy.split(":")
+    import socks4
+    socks4.socks4socket.PROXY = (addr, int(port))
+    return socks4.socks4socket
+        
 def random_permutations(collisions, n, random):
     while True:
         yield [random.choice(collisions) for i in range(n)]
@@ -28,7 +41,8 @@ def generate_random_parameters(collisions, nparams, lparams):
     return dict(zip(keys, values))
 
 def post(url, parameters):
-    from urllib import urlencode, urlopen
+    from urllib import urlopen, urlencode
+    socket.socket = provide_socket()
     urlencoded_parameters = urlencode(parameters)
     opened_url = urlopen(url, urlencoded_parameters)
     return opened_url.read()
