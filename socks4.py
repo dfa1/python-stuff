@@ -24,7 +24,7 @@ _socks4errors = ("request granted",
 		  "unknown error")
 
 	
-class socks4socket(object):
+class socks4socket(socket.socket):
 	PROXY = ('127.0.0.1', 1080)
 	"""socks4socket([family[, type[, proto]]]) -> socket object
 	
@@ -34,7 +34,7 @@ class socks4socket(object):
 	"""
 	
 	def __init__(self, family, type, proto):
-		self.proxy = _socket(socket.AF_INET, socket.SOCK_STREAM, 0)
+		_socket.__init__(self, family, type, proto)
 	
 	def __negotiatesocks4(self, destaddr, destport):
 		# Check if the destination address provided is an IP address
@@ -53,11 +53,11 @@ class socks4socket(object):
 		# DNS name if remote resolving is required
 		# NOTE: This is actually an extension to the SOCKS4 protocol
 		# called SOCKS4A and may not be supported in all cases.
-		if rmtrslv==True:
+		if rmtrslv:
 			req = req + destaddr + "\x00"
-		self.proxy.sendall(req)
+		self.sendall(req)
 		# Get the response from the server
-		resp = self.proxy.recv(8)
+		resp = self.recv(8)
 
 		if resp[0] != "\x00":
 			# Bad data
@@ -72,10 +72,9 @@ class socks4socket(object):
 		# Get the bound address/port
 		self.__proxysockname = (socket.inet_ntoa(resp[4:]),struct.unpack(">H",resp[2:4])[0])
 		if rmtrslv != None:
-			self.__proxypeername = (socket.inet_ntoa(ipaddr),destport)
+			self.__proxypeername = (socket.inet_ntoa(ipaddr), destport)
 		else:
-			self.__proxypeername = (destaddr,destport)
-	
+			self.__proxypeername = (destaddr, destport)
 	
 	def connect(self, destpair):
 		"""connect(self,despair)
@@ -84,7 +83,7 @@ class socks4socket(object):
 		(identical to socket's connect).
 		To select the proxy server use setproxy().
 		"""
-		self.proxy.connect(self.PROXY)
+		_socket.connect(self, self.PROXY)
 		self.__negotiatesocks4(destpair[0],destpair[1])
 
 """SocksiPy - Python SOCKS module.
