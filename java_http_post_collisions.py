@@ -22,16 +22,16 @@ import socket
 import sys
 import urllib
 
-def provide_socket():
+def enable_socks4_if_requested():
     proxy = os.getenv("socks_proxy", '')
-    if proxy == '':
+    if proxy != '':
+        print "enabling SOCKS via {0}".format(proxy)
+        addr, port = proxy.split(":")
+        import socks4
+        socks4.socks4socket.PROXY = (addr, int(port))
+        socket.socket = socks4.socks4socket
+    else:
         print "no SOCKS"
-        return socket.socket
-    print "enabling SOCKS via {0}".format(proxy)
-    addr, port = proxy.split(":")
-    import socks4
-    socks4.socks4socket.PROXY = (addr, int(port))
-    return socks4.socks4socket
         
 def random_permutations(collisions, n, random):
     while True:
@@ -44,7 +44,6 @@ def generate_random_parameters(collisions, nparams, lparams):
     return dict(zip(keys, values))
 
 def post(url, parameters):
-    socket.socket = provide_socket()
     urlencoded_parameters =  urllib.urlencode(parameters)
     opened_url = urllib.urlopen(url, urlencoded_parameters)
     return opened_url.read()
@@ -73,6 +72,7 @@ if __name__ == "__main__":
     if len(args) != 1:
         parser.error("missing target url")
 
+    enable_socks4_if_requested()
     target_url = args[0]
     response_body = post(target_url, parameters)
     if options.verbose:
