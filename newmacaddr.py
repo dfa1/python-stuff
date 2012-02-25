@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import subprocess
 import sys
+import random
 
 class Command(object):
 
@@ -16,7 +17,6 @@ def octect(i):
     return "{0:02x}".format(i)
 
 def random_macaddr():
-    import random
     always_start_with_zero = [0]
     random_bytes = always_start_with_zero + random.sample(range(256), 5)
     random_octects = map(octect, random_bytes)
