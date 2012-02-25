@@ -24,16 +24,16 @@ import socket
 import sys
 import urllib
 
-def enable_socks4_if_requested():
+def enable_socks4_if_requested(verbose):
     proxy = os.getenv("socks_proxy", '')
     if proxy != '':
-        print("enabling SOCKS via {0}".format(proxy))
+        if verbose: print("enabling SOCKS via {0}".format(proxy))
         addr, port = proxy.split(":")
         import socks4
         socks4.socks4socket.PROXY = (addr, int(port))
         socket.socket = socks4.socks4socket
     else:
-        print("no SOCKS")
+        if verbose: print("no SOCKS")
         
 def random_permutations(collisions, n, random):
     while True:
