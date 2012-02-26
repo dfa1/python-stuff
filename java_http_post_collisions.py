@@ -3,16 +3,14 @@
 DoS through hash table
 ----------------------
 
-tomcat 7.0.22.0
+tomcat 7.0.22.0 (lparams=20)
 
-lparams=20, nparams=10000
-
-parametri | tempo (s)
------------------
- 5000         3.3
-10000        26.0        
-20000        83.5
-40000       348.1
+nparams | request time (s)
+--------------------------
+ 5000                  3.3
+10000                 26.0        
+20000                 83.5
+40000                348.1
 
 ref: http://permalink.gmane.org/gmane.comp.security.full-disclosure/83694
 """
