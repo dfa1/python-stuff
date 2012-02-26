@@ -66,12 +66,6 @@ if __name__ == "__main__":
     collisions = [ "gq", "hR", "i3" ]
     parameters = generate_random_parameters(collisions, options.nparams, options.lparams)
 
-    if options.verbose:
-        print("java.lang.String with same hashcode", collisions)
-        print("number of parameters", options.nparams)
-        print("length of parameters", options.lparams)
-        print("unique parameters", len(parameters))
-
     if options.dump:
         for x in parameters.keys(): 
             print(x)
@@ -79,6 +73,12 @@ if __name__ == "__main__":
 
     if len(args) != 1:
         parser.error("missing target url")
+
+    if options.verbose:
+        print("java.lang.String with same hashcode", collisions)
+        print("number of parameters", options.nparams)
+        print("length of parameters", options.lparams)
+        print("unique parameters", len(parameters))
 
     enable_socks4_if_requested(options.verbose)
     target_url = args[0]
