@@ -24,13 +24,15 @@ import sys
 def enable_socks4_if_requested(verbose):
     proxy = os.getenv("socks_proxy", '')
     if proxy != '':
-        if verbose: print("enabling SOCKS via {0}".format(proxy))
+        if verbose: 
+            print("enabling SOCKS via {0}".format(proxy))
         addr, port = proxy.split(":")
         import socks4
         socks4.socks4socket.PROXY = (addr, int(port))
         socket.socket = socks4.socks4socket
     else:
-        if verbose: print("no SOCKS")
+        if verbose: 
+            print("no SOCKS")
         
 def random_permutations(collisions, n, random):
     while True:
@@ -55,7 +57,7 @@ def post(url, parameters):
     return opened_url.read()
 
 if __name__ == "__main__":
-    parser = optparse.OptionParser(version="1.0beta")
+    parser = optparse.OptionParser(version="1.0")
     parser.add_option("-v", dest="verbose", action="store_true", )
     parser.add_option("-n", dest="nparams", default=10000, type=int)
     parser.add_option("-l", dest="lparams", default=20, type=int)
