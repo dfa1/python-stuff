@@ -22,7 +22,6 @@ import optparse
 import random
 import socket
 import sys
-import urllib
 
 def enable_socks4_if_requested(verbose):
     proxy = os.getenv("socks_proxy", '')
@@ -41,13 +40,20 @@ def random_permutations(collisions, n, random):
 
 def generate_random_parameters(collisions, nparams, lparams):
     generator = random_permutations(collisions, lparams, random.Random()) 
-    keys = ["".join(generator.next()) for i in range(nparams)]
+    keys = ["".join(next(generator)) for i in range(nparams)]
     values = range(nparams)
     return dict(zip(keys, values))
 
 def post(url, parameters):
-    urlencoded_parameters =  urllib.urlencode(parameters)
-    opened_url = urllib.urlopen(url, urlencoded_parameters)
+    # workaround python2 vs python3 urllib
+    if sys.version_info[0] == 3:
+        from urllib.request import urlopen
+        from urllib.parse import urlencode
+    else:
+        from urllib import urlopen
+        from urllib import urlencode
+    urlencoded_parameters = urlencode(parameters)
+    opened_url = urlopen(url, urlencoded_parameters)
     return opened_url.read()
 
 if __name__ == "__main__":
