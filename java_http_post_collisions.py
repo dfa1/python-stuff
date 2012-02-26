@@ -67,8 +67,8 @@ if __name__ == "__main__":
     parameters = generate_random_parameters(collisions, options.nparams, options.lparams)
 
     if options.dump:
-        for x in parameters.keys(): 
-            print(x)
+        for parameter in parameters.keys(): 
+            print(parameter)
         sys.exit(0)
 
     if len(args) != 1:
